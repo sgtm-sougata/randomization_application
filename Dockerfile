@@ -1,24 +1,18 @@
-# Use an official R base image
-FROM rocker/r-ver:latest
 
-# Install system dependencies
-RUN apt-get update && \
-    apt-get install -y \
-      libcurl4-openssl-dev \
-      libssl-dev \
-      libxml2-dev
+# Base R Shiny image
+FROM rocker/shiny
 
-# Install R packages
+# Make a directory in the container
+RUN mkdir /home/shiny-app
+
+# Install R dependencies
 RUN R -e "install.packages(c('shiny', 'shinydashboard', 'shinythemes', 'blockrand', 'tidyverse', 'DT', 'glue'), repos='https://cran.rstudio.com/')"
 
-# Create and set the working directory
-WORKDIR /srv/shiny-server/myapp
+# Copy the Shiny app code
+COPY app.R /home/shiny-app/app.R
 
-# Copy the Shiny app files into the Docker image
-COPY . /srv/shiny-server/myapp
+# Expose the application port
+EXPOSE 8180
 
-# Expose the Shiny port
-EXPOSE 3838
-
-# Run the Shiny app on container start
-CMD ["R", "-e", "shiny::runApp('/srv/shiny-server/myapp')"]
+# Run the R Shiny app
+CMD Rscript /home/shiny-app/app.R
