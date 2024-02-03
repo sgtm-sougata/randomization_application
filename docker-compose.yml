@@ -1,0 +1,16 @@
+version: '3'
+
+services:
+  shiny-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "9090:3838"
+    volumes:
+      - ./app.R:/srv/shiny-server/myapp/app.R
+    environment:
+      - SHINY_OPTIONS="server.address='0.0.0.0'"
+
+networks:
+  shiny-net:
