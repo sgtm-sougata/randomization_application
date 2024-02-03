@@ -9,7 +9,7 @@ RUN apt-get update && \
       libxml2-dev
 
 # Install R packages
-RUN R -e "install.packages(c('shiny', 'shinydashboard', 'shinythemes'), repos='https://cran.rstudio.com/')"
+RUN R -e "install.packages(c('shiny', 'shinydashboard', 'shinythemes', 'blockrand', 'tidyverse', 'DT', 'glue'), repos='https://cran.rstudio.com/')"
 
 # Create and set the working directory
 WORKDIR /srv/shiny-server/myapp
