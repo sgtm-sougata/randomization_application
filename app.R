@@ -5,6 +5,10 @@ library(blockrand)
 library(shinydashboard)
 library(shinythemes)
 
+# Specify the application port
+options(shiny.host = "0.0.0.0")
+options(shiny.port = 8180)
+
 # Define UI
 ui <- dashboardPage(skin = "black",
   dashboardHeader(title = "Shiny Application"),
