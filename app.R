@@ -1,69 +1,122 @@
-library(DT)
-library(glue)
-library(tidyverse)
-library(blockrand)
+# Load the libraries
+library(shiny)
 library(shinydashboard)
 library(shinythemes)
+library(blockrand)
+library(tidyverse)
+library(tidyr)
+library(DT)
+library(glue)
 
-# Specify the application port
+
 options(shiny.host = "0.0.0.0")
 options(shiny.port = 8180)
 
 # Define UI
 ui <- dashboardPage(skin = "black",
-  dashboardHeader(title = "Shiny Application"),
-  dashboardSidebar(
-    sidebarMenu(
-      id = "sidebar",
-      menuItem("Upload Data", tabName = "upload", icon = icon("cloud-upload")),
-      menuItem("Select input", tabName = "input", icon = icon("dashboard")),
-      menuItem("Data Summary", tabName = "summary", icon = icon("table")),
-      menuItem("Analysis", tabName = "analysis", icon = icon("chart-bar"))
-    )
-  ),
-  dashboardBody(
-    tabItems(
-      tabItem(tabName = "upload",
-              fluidRow(
-                column(6, offset = 3,
-                       fileInput("file", "Upload allocation template .csv file", accept = ".csv"),
-                       actionButton("uploadBtn", "Upload")
-                       )
-              )
-      ),
-      tabItem(tabName = "input",
-              fluidRow(
-                column(6, offset = 3,  # Adjust the offset to center the column
-                       selectInput("selectcol", "Choose Randomize variable", choices = NULL),
-                       numericInput("number", "Number of sample", value = 100, min = 1),
-                       numericInput("blocksize", "Number of block", value = 2, min = 1),
-                       actionButton("inputBtn", "Submit")
-                )
-              )
-      ),
-      tabItem(tabName = "summary",
-              fluidRow(
-                column(1, offset = 0,
-                       downloadButton("downloadBtnDev", "Developments", icon = icon("download"))),
-                column(1, offset = 2,
-                       downloadButton("downloadBtnPro", "Production", icon = icon("download")))
-              ),
-              fluidRow(
-                box(
-                  title = "Data Table",
-                  width = 12,
-                  solidHeader = TRUE,
-                  dataTableOutput("data_table")
-                )
-              )
-      ),
-      tabItem(tabName = "analysis",
-              fluidRow(
-                # Add your analysis components here
-              )
-      )
-    )
-  )
+                    dashboardHeader(
+                      title= div(h3('RGen'), 'Random Number Generator')
+                    ),
+                    dashboardSidebar(
+                      sidebarMenu(
+                        id = "sidebar",
+                        menuItem("Upload Data", tabName = "upload", icon = icon("cloud-upload")),
+                        menuItem("Select input", tabName = "input", icon = icon("dashboard")),
+                        menuItem("Data Table", tabName = "summary", icon = icon("table")),
+                        menuItem("Summary", tabName = "analysis", icon = icon("chart-bar"))
+                      )
+                    ),
+                    dashboardBody(
+                      tabItems(
+                        tabItem(tabName = "upload",
+                                fluidRow(
+                                  column(12, offset = 1,
+                                         style = "display: flex; align-items: center; justify-content: center; margin-top: 10vh",
+                                         box(
+                                           style = "padding-top: 25px",
+                                           fileInput("file", "Upload allocation template .csv file", accept = ".csv"),
+                                           actionButton("uploadBtn", "Upload")
+                                         )
+                                  )
+                                )
+                        ),
+                        tabItem(tabName = "input",
+                                fluidRow(
+                                  column(12, offset = 1, # Adjust the offset to center the column
+                                         style = "display: flex; margin-top: 10vh; justify-content: center;",
+                                         box(
+                                           style = "padding-top: 25px",
+                                           selectInput("selectcol", "Choose Randomize variable", choices = NULL),
+                                           numericInput("number", "Number of sample", value = 100, min = 1),
+                                           numericInput("blocksize", "Number of block", value = 2, min = 1),
+                                           actionButton("inputBtn", "Submit")
+                                         )
+                                         
+                                  )
+                                )
+                        ),
+                        tabItem(tabName = "summary",
+                                tabsetPanel(
+                                  tabPanel("Development", 
+                                           fluidRow(
+                                             box(
+                                               downloadButton("downloadBtnDev", "",icon = icon("download")),
+                                               width = 12,
+                                               solidHeader = TRUE,
+                                               dataTableOutput("data_table_dev")
+                                             )
+                                           )
+                                  ),
+                                  tabPanel("Production", 
+                                           fluidRow(
+                                             box(
+                                               title = "Data Table",
+                                               downloadButton("downloadBtnPro", "", icon = icon("download")),
+                                               width = 12,
+                                               solidHeader = TRUE,
+                                               dataTableOutput("data_table_pro")
+                                             )
+                                           )
+                                  )
+                                )
+                        ),
+                        tabItem(tabName = "analysis",
+                                fluidRow(
+                                  tabsetPanel(
+                                    tabPanel("Development", 
+                                             fluidRow(
+                                               box(
+                            
+                                                 width = 12,
+                                                 solidHeader = TRUE,
+                                                 dataTableOutput("summary_table_dev")
+                                               )
+                                             )
+                                    ),
+                                    tabPanel("Production", 
+                                             fluidRow(
+                                               box(
+                                                 
+                                                 width = 12,
+                                                 solidHeader = TRUE,
+                                                 dataTableOutput("summary_table_pro")
+                                               )
+                                             )
+                                    )
+                                  )
+                                )
+                        )
+                      ),
+                      tags$footer(
+                        style = "text-align: center; position: absolute; bottom: 0; width: 100%; padding-bottom: 10px; ",
+                        "Randomization | Allocation Generator",
+                        br(),
+                        "Developed and Maintained by Department of Radiation Oncology, Tata Medical Center, Kolkata",
+                        br(),
+                        br()
+                      )
+                    )
+                    
 )
 
 # Define server
@@ -135,11 +188,18 @@ server <- function(input, output, session) {
     list(df_development = df_development, df_production = df_production)
   })
   
-  # Render the uploaded data as a datatable
-  output$data_table <- renderDataTable({
+  # Render the uploaded data as a datatable for Development
+  output$data_table_dev <- renderDataTable({
     req(input$selectcol, input$number, input$blocksize)
     df_development <- processed_data()$df_development
     data.frame(df_development)
+  })
+  
+  # Render the uploaded data as a datatable for Production
+  output$data_table_pro <- renderDataTable({
+    req(input$selectcol, input$number, input$blocksize)
+    df_production <- processed_data()$df_production
+    data.frame(df_production)
   })
   
   # Download handler for Development button
@@ -161,6 +221,21 @@ server <- function(input, output, session) {
       write.csv(processed_data()$df_production, file, row.names = FALSE)
     }
   )
+  
+  # output summary table development and production with component
+  output$summary_table_dev <- renderDataTable({
+    req(input$selectcol, input$number, input$blocksize)
+    df_development <- processed_data()$df_development
+    df_dev_summary <- df_development %>% group_by_all() %>% count()
+    data.frame(df_dev_summary)
+  })
+  
+  output$summary_table_pro <- renderDataTable({
+    req(input$selectcol, input$number, input$blocksize)
+    df_production <- processed_data()$df_production
+    df_pro_summary <- df_production %>% group_by_all() %>% count()
+    data.frame(df_pro_summary)
+  })
 }
 
 # Run the application
