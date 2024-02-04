@@ -6,11 +6,10 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "9090:3838"
+      - "8180:8180"
     volumes:
-      - ./app.R:/srv/shiny-server/myapp/app.R
-    environment:
-      - SHINY_OPTIONS="server.address='0.0.0.0'"
+      - shiny-data:/home/shiny-app
+      - ./app.R:/home/shiny-app/app.R
 
-networks:
-  shiny-net:
+volumes:
+  shiny-data:
