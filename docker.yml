@@ -1,16 +1,13 @@
-version: "3.0"
+version: '3'
 
 services:
-  shiny:
-    container_name: rgen_container
-    image: rocker/shiny:latest
-    restart: always
-    user: 'root'
+  flask-app:
+    build:
+      context: .
     ports:
-      - '8180:8180'
+      - "5000:5000"
     volumes:
-      - 'shiny_logs:/var/log/shiny-server'
-      - './app.R:/home/shiny-app/app.R'  # Mount your app.R file into the container
+      - flask-app-data:/home/shiny-app
 
 volumes:
-  shiny_logs:
+  flask-app-data:
