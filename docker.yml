@@ -7,7 +7,7 @@ services:
     ports:
       - "8180:8180"
     volumes:
-      - flask-app-data:/home/shiny-app
+      - flask-app-data:/app
 
 volumes:
   flask-app-data:
