@@ -3,11 +3,14 @@ version: "3.0"
 services:
   shiny:
     container_name: rgen_container
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: rocker/shiny:latest
     restart: always
+    user: 'root'
+    ports:
+      - '8180:8180'
     volumes:
       - 'shiny_logs:/var/log/shiny-server'
+      - './app.R:/home/shiny-app/app.R'  # Mount your app.R file into the container
+
 volumes:
   shiny_logs:
