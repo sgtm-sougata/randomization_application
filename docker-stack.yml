@@ -6,7 +6,7 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "8180:8180"
+      - "8087:8180"
     volumes:
       - shiny-data:/home/shiny-app
       - ./app.R:/home/shiny-app/app.R
