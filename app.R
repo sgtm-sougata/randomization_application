@@ -108,7 +108,7 @@ ui <- dashboardPage(skin = "black",
                       ),
                       tags$footer(
                         style = "text-align: center; position: absolute; bottom: 0; width: 100%; padding-bottom: 10px; ",
-                        "Randomization | Allocation Generator",
+                        "Randomization | Allocation",
                         br(),
                         "Developed and Maintained by Department of Radiation Oncology, Tata Medical Center, Kolkata",
                         br(),
