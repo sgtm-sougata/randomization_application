@@ -1,11 +1,16 @@
-version: '3'
+version: "3.0"
 
 services:
-  shiny-app:
+  shiny:
+    container_name: shiny
     build:
       context: .
       dockerfile: Dockerfile
+    restart: always
+    user: 'root'
     ports:
-      - "8087:8180"
+      - '8180:8180'
     volumes:
-      - ./app.R:/home/shiny-app/app.R
+      - 'shiny_logs:/var/log/shiny-server'
+volumes:
+  shiny_logs:
