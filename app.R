@@ -70,7 +70,6 @@ ui <- dashboardPage(skin = "black",
                                   tabPanel("Production", 
                                            fluidRow(
                                              box(
-                                               title = "Data Table",
                                                downloadButton("downloadBtnPro", "", icon = icon("download")),
                                                width = 12,
                                                solidHeader = TRUE,
