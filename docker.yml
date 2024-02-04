@@ -7,9 +7,6 @@ services:
       context: .
       dockerfile: Dockerfile
     restart: always
-    user: 'root'
-    ports:
-      - '8180:8180'
     volumes:
       - 'shiny_logs:/var/log/shiny-server'
 volumes:
