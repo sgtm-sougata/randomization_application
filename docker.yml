@@ -8,8 +8,4 @@ services:
     ports:
       - "8087:8180"
     volumes:
-      - shiny-data:/home/shiny-app
       - ./app.R:/home/shiny-app/app.R
-
-volumes:
-  shiny-data:
