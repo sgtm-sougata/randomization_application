@@ -3,19 +3,22 @@ library(shiny)
 library(shinydashboard)
 library(shinythemes)
 library(blockrand)
-library(tidyverse)
+library(dplyr)
+library(readr)
 library(tidyr)
+library(stringr)
 library(DT)
 library(glue)
 
 
 options(shiny.host = "0.0.0.0")
-options(shiny.port = 8180)
+options(shiny.port = 8087)
+
 
 # Define UI
 ui <- dashboardPage(skin = "black",
                     dashboardHeader(
-                      title= div(h3('RGen'), 'Random Number Generator')
+                      title = "RGen"
                     ),
                     dashboardSidebar(
                       sidebarMenu(
