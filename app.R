@@ -207,7 +207,7 @@ server <- function(input, output, session) {
   # Download handler for Development button
   output$downloadBtnDev <- downloadHandler(
     filename = function() {
-      paste("development_data.csv")
+      paste("development_allocation_table.csv")
     },
     content = function(file) {
       write.csv(processed_data()$df_development, file, row.names = FALSE)
@@ -217,7 +217,7 @@ server <- function(input, output, session) {
   # Download handler for Production button
   output$downloadBtnPro <- downloadHandler(
     filename = function() {
-      paste("production_data.csv")
+      paste("production_allocation_table.csv")
     },
     content = function(file) {
       write.csv(processed_data()$df_production, file, row.names = FALSE)
