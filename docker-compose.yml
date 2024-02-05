@@ -1,0 +1,12 @@
+version: '3'
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8087:8087"
+volumes:
+  application-data: 
+
