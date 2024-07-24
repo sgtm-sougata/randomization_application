@@ -18,7 +18,7 @@ options(shiny.port = 8087)
 # Define UI
 ui <- dashboardPage(skin = "black",
                     dashboardHeader(
-                      title = "RGen"
+                      title = "Random Allocation"
                     ),
                     dashboardSidebar(
                       sidebarMenu(
@@ -88,7 +88,7 @@ ui <- dashboardPage(skin = "black",
                                     tabPanel("Development", 
                                              fluidRow(
                                                box(
-                            
+                                                 
                                                  width = 12,
                                                  solidHeader = TRUE,
                                                  dataTableOutput("summary_table_dev")
@@ -140,7 +140,14 @@ server <- function(input, output, session) {
   
   # Randomization function
   randomization_function <- function(df1, category_column, n, block_size) {
-    df11 <- df1 |> select(- randomization_group)
+    last_col <- names(df1)[ncol(df1)]
+    df1 <- df1 %>%
+      mutate(
+        !!last_col := str_extract(!!sym(last_col), "^\\d+"),
+        !!last_col := as.numeric(!!sym(last_col))
+      ) %>% na.omit()
+    
+    df11 <- df1 |> select(- input$selectcol)
     unique_val <- lapply(df11, unique) 
     all_possible_outcome <- expand.grid(unique_val)
     df <- all_possible_outcome |>
